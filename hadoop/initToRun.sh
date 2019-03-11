@@ -1,0 +1,5 @@
+export HD_DOCKER_VERION=0.0.1
+export HD_VERSION=3.2.0
+
+
+
