@@ -1,9 +1,13 @@
-FROM docker-base:0.1.1
+FROM centos
 
-#!/bin/bash
+ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0
+ENV HBASE_VERSION 2.1.3
+ENV HBASE_PREFIX /opt/hbase-$HBASE_VERSION
+ENV HBASE_CONF_DIR /etc/hbase
+ENV USER root
+ENV PATH $HBASE_PREFIX/bin/:$PATH
 
-tar -xvf /hbase*.tar.gz -C /opt/
-rm -rf /hbase*.tar.gz
-ln -s /opt/hadoop-$HADOOP_VERSION/etc/hadoop /etc/hadoop
-mkdir /opt/hadoop-$HADOOP_VERSION/logs
-mkdir /hadoop-data
+ADD . /
+RUN chmod a+x /entrypoint.sh && chmod a+x /install.sh && /usr/bin/bash /install.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

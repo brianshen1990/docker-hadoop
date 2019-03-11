@@ -1,0 +1,32 @@
+version: "2"
+
+services:
+  zoo:
+    image: zookeeper
+    container_name: zoo
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888
+    ports:
+      - 2181:2181
+
+  hbase-master:
+    image: hbase-master:0.1.1
+    container_name: hbase-master
+    hostname: hbase-master
+    env_file:
+      - ./hbase.env
+    environment:
+      SERVICE_PRECONDITION: "zoo:2181"
+    ports:
+      - 16010:16010
+
+  hbase-region:
+    image: hbase-region:0.1.1
+    container_name: hbase-regionserver
+    hostname: hbase-regionserver
+    env_file:
+      - ./hbase.env
+    environment:
+      HBASE_CONF_hbase_regionserver_hostname: hbase-region
+      SERVICE_PRECONDITION: "zoo:2181 hbase-master:16010"
