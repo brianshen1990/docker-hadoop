@@ -101,6 +101,7 @@ services:
       SERVICE_PRECONDITION: "namenode:9870 zoo:2181"
     ports:
       - 16010:16010
+      - 60080:60080
 
   hbase-region:
     image: hbase-region:0.1.1
