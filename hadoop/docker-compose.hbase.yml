@@ -40,20 +40,8 @@ services:
     ports:
       - 8188:8188
 
-  nodemanager1:
-    image: nodemanager:0.1.1
-    container_name: nodemanager1
-    depends_on:
-      - namenode
-      - datanode1
-      - datanode2
-    env_file:
-      - ./hadoop.env
-    ports:
-      - 8042:8042
-
   datanode1:
-    image: datanode:0.1.1
+    image: datamanager:0.1.1
     container_name: datanode1
     depends_on:
       - namenode
@@ -63,7 +51,7 @@ services:
       - ./hadoop.env
   
   datanode2:
-    image: datanode:0.1.1
+    image: datamanager:0.1.1
     container_name: datanode2
     depends_on:
       - namenode
@@ -73,12 +61,22 @@ services:
       - ./hadoop.env
   
   datanode3:
-    image: datanode:0.1.1
+    image: datamanager:0.1.1
     container_name: datanode3
     depends_on:
       - namenode
     volumes:
       - /hadoop/dfs/data3:/hadoop/dfs/data
+    env_file:
+      - ./hadoop.env
+
+  datanode4:
+    image: datamanager:0.1.1
+    container_name: datanode4
+    depends_on:
+      - namenode
+    volumes:
+      - /hadoop/dfs/data4:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
 
@@ -88,6 +86,9 @@ services:
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888
+    volumes:
+      - /zookeeper/datalog:/datalog
+      - /zookeeper/data:/data
     ports:
       - 2181:2181
 
