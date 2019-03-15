@@ -34,7 +34,7 @@ services:
       - datanode1
       - datanode2
     volumes:
-      - /hadoop/yarn/timeline:/hadoop/yarn/timeline
+      - /hadoop/yarn/timeline:/mr-history
     env_file:
       - ./hadoop.env
     ports:

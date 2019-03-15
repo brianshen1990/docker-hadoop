@@ -34,11 +34,12 @@ services:
       - datanode1
       - datanode2
     volumes:
-      - /hadoop/yarn/timeline:/hadoop/yarn/timeline
+      - /hadoop/yarn/timeline:/mr-history
     env_file:
       - ./hadoop.env
     ports:
-      - 8188:8188
+      - 19888:19888
+      - 10020:10020
 
   datanode1:
     image: datamanager:0.1.1
