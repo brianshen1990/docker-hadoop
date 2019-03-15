@@ -70,16 +70,6 @@ services:
     env_file:
       - ./hadoop.env
 
-  datanode4:
-    image: datamanager:0.1.1
-    container_name: datanode4
-    depends_on:
-      - namenode
-    volumes:
-      - /hadoop/dfs/data4:/hadoop/dfs/data
-    env_file:
-      - ./hadoop.env
-
   zoo:
     image: zookeeper
     container_name: zoo

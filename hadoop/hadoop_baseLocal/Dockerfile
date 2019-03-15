@@ -1,12 +1,19 @@
 FROM centos
 
-ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0
+ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk
 ENV HADOOP_VERSION 3.2.0
 ENV HADOOP_PREFIX /opt/hadoop-$HADOOP_VERSION
 ENV HADOOP_CONF_DIR /etc/hadoop
+ENV HADOOP_MAPRED_HOME $HADOOP_PREFIX
+ENV YARN_HOME $HADOOP_PREFIX
+ENV HADOOP_HDFS_HOME $HADOOP_PREFIX
+ENV HADOOP_COMMON_HOME $HADOOP_PREFIX
+ENV HADOOP_OPTS="-Djava.library.path=$HADOOP_PREFIX/lib/native"
+ENV HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_PREFIX/lib/native
 ENV MULTIHOMED_NETWORK 1       
-ENV USER root           
+ENV USER root   
 ENV PATH $HADOOP_PREFIX/bin/:$PATH
+ENV HADOOP_CLASSPATH ${JAVA_HOME}/lib/tools.jar
 
 ADD . /
 RUN chmod a+x /entrypoint.sh && chmod a+x /install.sh && /usr/bin/bash /install.sh
