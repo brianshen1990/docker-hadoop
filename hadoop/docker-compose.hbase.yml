@@ -70,7 +70,21 @@ services:
       - /hadoop/dfs/data3:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
-
+  
+  sparksubmit:
+    image: spark:0.1.1
+    container_name: sparksubmit
+    depends_on:
+      - namenode
+      - resourcemanager
+    volumes:
+      - /hadoop/spark/sparkLog:/sparkLog
+    env_file:
+      - ./hadoop.env
+      - ./spark.env
+    ports:
+      - 18080:18080
+      
   zoo:
     image: zookeeper
     container_name: zoo

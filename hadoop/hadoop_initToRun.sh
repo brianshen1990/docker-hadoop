@@ -7,3 +7,5 @@ mkdir $HADOOP_PATH/dfs/name
 mkdir $HADOOP_PATH/dfs/data1
 mkdir $HADOOP_PATH/dfs/data2
 mkdir $HADOOP_PATH/dfs/data3
+mkdir $HADOOP_PATH/spark
+mkdir $HADOOP_PATH/spark/sparklog
