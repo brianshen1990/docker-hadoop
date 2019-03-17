@@ -77,14 +77,12 @@ services:
     depends_on:
       - namenode
       - resourcemanager
-    volumes:
-      - /hadoop/spark/sparkLog:/sparkLog
     env_file:
       - ./hadoop.env
       - ./spark.env
     ports:
       - 18080:18080
-      
+
   zoo:
     image: zookeeper
     container_name: zoo

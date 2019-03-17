@@ -28,7 +28,7 @@ function configureSpark() {
 
 
 tar -xvf /spark*.tgz -C /opt/
-rm -rf /spark*.tar.gz
+rm -rf /spark*.tgz
 ln -s /opt/spark-$SPARK_VERSION/conf /etc/spark
 cp /etc/spark/spark-defaults.conf.template /etc/spark/spark-defaults.conf
 configureSpark /etc/spark/spark-defaults.conf default SPARK_DEFAULT
