@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yum install perl java-1.8.0-openjdk-headless.x86_64 java-devel nc -y
+yum install java-1.8.0-openjdk-headless.x86_64 java-devel nc -y
 tar -xvf /hbase*.tar.gz -C /opt/
 rm -rf /hbase*.tar.gz
 ln -s /opt/hbase-$HBASE_VERSION/conf /etc/hbase

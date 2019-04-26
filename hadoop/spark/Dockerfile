@@ -1,4 +1,4 @@
-FROM docker-base:0.1.1
+FROM docker-base:0.1.2
 
 ENV SPARK_VERSION 2.4.0-bin-hadoop2.7
 

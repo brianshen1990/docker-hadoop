@@ -1,4 +1,4 @@
-FROM hbase-base:0.1.1
+FROM hbase-base:0.1.2
 
 COPY run.sh /run.sh
 RUN chmod +x /run.sh

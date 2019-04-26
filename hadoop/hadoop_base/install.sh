@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yum install perl wget java-1.8.0-openjdk-headless.x86_64 -y
+yum install wget java-1.8.0-openjdk-headless.x86_64 -y
 cd /root
 wget "$HADOOP_URL"
 tar -xvf /root/hadoop*.tar.gz -C /opt/

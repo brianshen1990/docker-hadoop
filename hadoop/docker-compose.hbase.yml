@@ -2,7 +2,7 @@ version: "2"
 
 services:
   namenode:
-    image: namenode:0.1.1
+    image: namenode:0.1.2
     container_name: namenode
     volumes:
       - /hadoop/dfs/name:/hadoop/dfs/name
@@ -10,12 +10,14 @@ services:
       - CLUSTER_NAME=test
     env_file:
       - ./hadoop.env
+    networks:
+      - hadoopnet
     ports:
       - 9870:9870
       - 8020:8020
   
   resourcemanager:
-    image: resourcemanager:0.1.1
+    image: resourcemanager:0.1.2
     container_name: resourcemanager
     depends_on:
       - namenode
@@ -23,11 +25,13 @@ services:
       - datanode2
     env_file:
       - ./hadoop.env
+    networks:
+      - hadoopnet
     ports:
       - 8088:8088
 
   historyserver:
-    image: historyserver:0.1.1
+    image: historyserver:0.1.2
     container_name: historyserver
     depends_on:
       - namenode
@@ -37,12 +41,14 @@ services:
       - /hadoop/yarn/timeline:/mr-history
     env_file:
       - ./hadoop.env
+    networks:
+      - hadoopnet
     ports:
       - 19888:19888
       - 10020:10020
 
   datanode1:
-    image: datamanager:0.1.1
+    image: datamanager:0.1.2
     container_name: datanode1
     depends_on:
       - namenode
@@ -50,9 +56,11 @@ services:
       - /hadoop/dfs/data1:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
-  
+    networks:
+      - hadoopnet
+
   datanode2:
-    image: datamanager:0.1.1
+    image: datamanager:0.1.2
     container_name: datanode2
     depends_on:
       - namenode
@@ -60,9 +68,11 @@ services:
       - /hadoop/dfs/data2:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
-  
+    networks:
+      - hadoopnet
+
   datanode3:
-    image: datamanager:0.1.1
+    image: datamanager:0.1.2
     container_name: datanode3
     depends_on:
       - namenode
@@ -70,7 +80,9 @@ services:
       - /hadoop/dfs/data3:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
-  
+    networks:
+      - hadoopnet
+
   sparksubmit:
     image: spark:0.1.1
     container_name: sparksubmit
@@ -80,39 +92,50 @@ services:
     env_file:
       - ./hadoop.env
       - ./spark.env
+    networks:
+      - hadoopnet
     ports:
       - 18080:18080
 
-  zoo:
+  zoohbase:
     image: zookeeper
-    container_name: zoo
+    container_name: zoohbase
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888
     volumes:
       - /zookeeper/datalog:/datalog
       - /zookeeper/data:/data
+    networks:
+      - hadoopnet
     ports:
       - 2181:2181
 
   hbase-master:
-    image: hbase-master:0.1.1
+    image: hbase-master:0.1.2
     container_name: hbase-master
     hostname: hbase-master
     env_file:
       - ./hbase.env
     environment:
-      SERVICE_PRECONDITION: "namenode:9870 zoo:2181"
+      SERVICE_PRECONDITION: "namenode:9870 zoohbase:2181"
+    networks:
+      - hadoopnet
     ports:
       - 16010:16010
       - 60080:60080
 
   hbase-region:
-    image: hbase-region:0.1.1
-    container_name: hbase-regionserver
-    hostname: hbase-regionserver
+    image: hbase-region:0.1.2
+    container_name: hbase-region
+    hostname: hbase-region
     env_file:
       - ./hbase.env
+    networks:
+      - hadoopnet
     environment:
       HBASE_CONF_hbase_regionserver_hostname: hbase-region
-      SERVICE_PRECONDITION: "namenode:9870 zoo:2181 hbase-master:16010"
+      SERVICE_PRECONDITION: "namenode:9870 zoohbase:2181 hbase-master:16010"
+
+networks:
+  hadoopnet:

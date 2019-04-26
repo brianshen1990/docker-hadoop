@@ -1,4 +1,4 @@
-FROM docker-base:0.1.1
+FROM docker-base:0.1.2
 
 HEALTHCHECK CMD curl -f http://localhost:50075/ && curl -f http://localhost:8042/  || exit 1
 

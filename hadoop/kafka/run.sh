@@ -16,21 +16,16 @@ function configureSpark() {
     local var
     local value
     
-    for c in `printenv | grep ${envPrefix}`; do 
-        c="${c/$envPrefix\_/}"
-        c="${c/=*/}"
-        echo $c
-        name="${c//___/-}"
-        name="${name//__/@}"
-        name="${name//_/.}"
-        name="${name//@/_}"
-        echo $name
+    echo "Configuring $module"
+    for c in `printenv | perl -sne 'print "$1 " if m/^${envPrefix}_(.+?)=.*/' -- -envPrefix=$envPrefix`; do 
+        name=`echo ${c} | perl -pe 's/___/-/g; s/__/@/g; s/_/./g; s/@/_/g;'`
         var="${envPrefix}_${c}"
         value=${!var}
         echo " - Setting $name=$value"
         addPropertySpark $path $name "$value"
     done
 }
+
 
 tar -xvf /spark*.tgz -C /opt/
 rm -rf /spark*.tgz

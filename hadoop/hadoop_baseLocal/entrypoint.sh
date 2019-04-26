@@ -21,13 +21,19 @@ function configure() {
     local var
     local value
     
-    echo "Configuring $module"
-    for c in `printenv | perl -sne 'print "$1 " if m/^${envPrefix}_(.+?)=.*/' -- -envPrefix=$envPrefix`; do 
-        name=`echo ${c} | perl -pe 's/___/-/g; s/__/@/g; s/_/./g; s/@/_/g;'`
+    for c in `printenv | grep ${envPrefix}`; do 
+        c="${c/$envPrefix\_/}"
+        c="${c/=*/}"
+        echo $c
+        name="${c//___/-}"
+        name="${name//__/@}"
+        name="${name//_/.}"
+        name="${name//@/_}"
+        echo $name
         var="${envPrefix}_${c}"
         value=${!var}
         echo " - Setting $name=$value"
-        addProperty /etc/hadoop/$module-site.xml $name "$value"
+        addProperty $path $name "$value"
     done
 }
 
@@ -57,26 +63,7 @@ if [ "$MULTIHOMED_NETWORK" = "1" ]; then
 
     # MAPRED
     addProperty /etc/hadoop/mapred-site.xml yarn.nodemanager.bind-host 0.0.0.0
-fi
-
-if [ -n "$GANGLIA_HOST" ]; then
-    mv /etc/hadoop/hadoop-metrics.properties /etc/hadoop/hadoop-metrics.properties.orig
-    mv /etc/hadoop/hadoop-metrics2.properties /etc/hadoop/hadoop-metrics2.properties.orig
-
-    for module in mapred jvm rpc ugi; do
-        echo "$module.class=org.apache.hadoop.metrics.ganglia.GangliaContext31"
-        echo "$module.period=10"
-        echo "$module.servers=$GANGLIA_HOST:8649"
-    done > /etc/hadoop/hadoop-metrics.properties
     
-    for module in namenode datanode resourcemanager nodemanager mrappmaster jobhistoryserver; do
-        echo "$module.sink.ganglia.class=org.apache.hadoop.metrics2.sink.ganglia.GangliaSink31"
-        echo "$module.sink.ganglia.period=10"
-        echo "$module.sink.ganglia.supportsparse=true"
-        echo "$module.sink.ganglia.slope=jvm.metrics.gcCount=zero,jvm.metrics.memHeapUsedM=both"
-        echo "$module.sink.ganglia.dmax=jvm.metrics.threadsBlocked=70,jvm.metrics.memHeapUsedM=40"
-        echo "$module.sink.ganglia.servers=$GANGLIA_HOST:8649"
-    done > /etc/hadoop/hadoop-metrics2.properties
 fi
 
 exec $@
