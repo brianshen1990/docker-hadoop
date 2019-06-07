@@ -5,7 +5,7 @@ services:
     image: namenode:0.1.2
     container_name: namenode
     volumes:
-      - /hadoop/dfs/name:/hadoop/dfs/name
+      - namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -38,7 +38,7 @@ services:
       - datanode1
       - datanode2
     volumes:
-      - /hadoop/yarn/timeline:/mr-history
+      - historyserver:/mr-history
     env_file:
       - ./hadoop.env
     networks:
@@ -53,7 +53,7 @@ services:
     depends_on:
       - namenode
     volumes:
-      - /hadoop/dfs/data1:/hadoop/dfs/data
+      - datanode1:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
     networks:
@@ -65,7 +65,7 @@ services:
     depends_on:
       - namenode
     volumes:
-      - /hadoop/dfs/data2:/hadoop/dfs/data
+      - datanode2:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
     networks:
@@ -77,14 +77,14 @@ services:
     depends_on:
       - namenode
     volumes:
-      - /hadoop/dfs/data3:/hadoop/dfs/data
+      - datanode3:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
     networks:
       - hadoopnet
 
   sparksubmit:
-    image: spark:0.1.1
+    image: spark:0.1.2
     container_name: sparksubmit
     depends_on:
       - namenode
@@ -104,8 +104,8 @@ services:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=0.0.0.0:2888:3888
     volumes:
-      - /zookeeper/datalog:/datalog
-      - /zookeeper/data:/data
+      - zoohbasedatalog:/datalog
+      - zoohbasedata:/data
     networks:
       - hadoopnet
     ports:
@@ -137,5 +137,15 @@ services:
       HBASE_CONF_hbase_regionserver_hostname: hbase-region
       SERVICE_PRECONDITION: "namenode:9870 zoohbase:2181 hbase-master:16010"
 
+volumes:
+  datanode1:
+  datanode2:
+  datanode3:
+  namenode:
+  historyserver:
+  zoohbasedatalog:
+  zoohbasedata:
+
 networks:
   hadoopnet:
+
